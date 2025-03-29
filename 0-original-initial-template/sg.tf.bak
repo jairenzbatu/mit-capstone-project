@@ -1,0 +1,78 @@
+resource "aws_security_group" "alb_sg" {
+  name        = "allow_http_on_alb"
+  description = "Allow http inbound traffic"
+  vpc_id      = aws_vpc.app_vpc.id
+
+  ingress {
+    description      = "HTTP from VPC"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_alb_http"
+  }
+}
+resource "aws_security_group" "app_sg" {
+  name        = "allow_ssh_http_on_app"
+  description = "Allow ssh http inbound traffic"
+  vpc_id      = aws_vpc.app_vpc.id
+
+  ingress {
+    description      = "SSH from VPC"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "HTTP from VPC"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_ssh_http_on_app"
+  }
+}
+resource "aws_security_group" "rds_sg" {
+  name        = "allow_mysql"
+  description = "Allow MySQL inbound traffic"
+  vpc_id      = aws_vpc.app_vpc.id
+
+  # Add any additional ingress/egress rules as needed
+  ingress {
+    description = "MySQL traffic from anywhere"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "allow_mysql"
+  }
+}

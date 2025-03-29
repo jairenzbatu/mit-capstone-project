@@ -1,0 +1,58 @@
+Docker Installation Notes on EC2 instance
+
+# installation
+sudo yum install -y docker
+
+# permission and group configuration
+sudo usermod -a -G docker ec2-user
+id ec2-user
+newgrp docker
+
+# enable docker service
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
+
+
+# mysql client installation
+https://muleif.medium.com/how-to-install-mysql-on-amazon-linux-2023-5d39afa5bf11
+
+
+# rds on terraform
+https://spacelift.io/blog/terraform-aws-rds
+
+
+# creation of snipe user and database
+CREATE DATABASE snipeit;
+CREATE USER 'snipeit-user'@'%' IDENTIFIED BY 'dbpassword';
+GRANT ALL ON snipeit.* TO 'snipeit-user'@'%';
+
+
+
+docker run -d -p 80:80 --name="snipeit" \
+--env-file=/opt/my_env \
+-e DB_CONNECTION="mysql" \
+-e DB_USERNAME="snipeit-user" \
+-e DB_DATABASE="snipeit" \
+-e DB_PORT="3306" \
+-e DB_HOST=mydb.ctss440wygde.us-west-2.rds.amazonaws.com \
+-e DB_PASSWORD=dbpassword \
+-e APP_KEY="base64:2sDxFfjJq4GJr4qjTx8EFSAaImBlPEDcUBWVh/HNU3o=" \
+-e APP_DEBUG="false" \
+-e APP_URL="http://snipe.jai.com" \
+--mount source=snipe-vol,dst=/var/lib/snipeit \
+snipe/snipe-it
+
+
+docker run -d -p 80:80 --name="snipeit" \
+--env-file=/opt/my_env \
+-e DB_CONNECTION="mysql" \
+-e DB_USERNAME="snipeit-user" \
+-e DB_DATABASE="snipeit" \
+-e DB_PORT="3306" \
+-e DB_HOST=$RDS_HOST \
+-e DB_PASSWORD=$RDS_ROOT_PASS \
+-e APP_KEY="base64:2sDxFfjJq4GJr4qjTx8EFSAaImBlPEDcUBWVh/HNU3o=" \
+-e APP_DEBUG="false" \
+-e APP_URL="http://snipe.jai.com" \
+--mount source=snipe-vol,dst=/var/lib/snipeit \
+snipe/snipe-it

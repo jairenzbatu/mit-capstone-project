@@ -1,0 +1,9 @@
+# output "web_instance_ip" {
+#   value = aws_instance.web.public_ip
+# }
+# output "Rds_Address" {
+#   value = aws_db_instance.default.address
+# }
+# output "Website_Address" {
+#   value = aws_lb.snipe_alb.dns_name
+# }

@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "prettier-plugin-terraform-formatter": "^1.2.1"
+  }
+}
